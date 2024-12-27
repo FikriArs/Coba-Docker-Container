@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  python_app:
+    image: python:3.11-slim
+    container_name: python_service
+    volumes:
+      - ./app:/usr/src/app
+    working_dir: /usr/src/app
+    command: python3 main.py
+    depends_on:
+      - mysql
+    ports:
+      - "${APP_EXPOSE_PORT}" 
+    networks:
+      - app_network
+
+  mysql:
+    image: mysql:8.0  
+    container_name: mysql_service
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD} 
+      MYSQL_DATABASE: ${MYSQL_DATABASE}  
+      MYSQL_USER: user  
+      MYSQL_PASSWORD: userpassword  
+    ports:
+      - "${MYSQL_EXPOSE_PORT}"
+    networks:
+      - app_network
+
+networks:
+  app_network:
+    driver: bridge
